@@ -31,7 +31,7 @@ const TaskManager: React.FC = () => {
 
     const fetchTasks = async () => {
         try {
-            const response = await axios.get<ApiResponse>('http://localhost:4000/api/tasks', {
+            const response = await axios.get<ApiResponse>('https://todoback-iwsz.onrender.com/api/tasks', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             console.log('Fetched tasks:', response.data);
@@ -54,11 +54,11 @@ const TaskManager: React.FC = () => {
     const handleCreateOrUpdate = async () => {
         try {
             if (task._id) {
-                await axios.put<ApiResponse>(`http://localhost:4000/api/tasks/${task._id}`, task, {
+                await axios.put<ApiResponse>(`https://todoback-iwsz.onrender.com/api/tasks/${task._id}`, task, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
             } else {
-                await axios.post<ApiResponse>('http://localhost:4000/api/tasks/create', task, {
+                await axios.post<ApiResponse>('https://todoback-iwsz.onrender.com/api/tasks/create', task, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
             }
@@ -71,7 +71,7 @@ const TaskManager: React.FC = () => {
 
     const handleDelete = async (_id: string) => {
         try {
-            await axios.delete<ApiResponse>(`http://localhost:4000/api/tasks/${_id}`, {
+            await axios.delete<ApiResponse>(`https://todoback-iwsz.onrender.com/api/tasks/${_id}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             fetchTasks();
@@ -83,7 +83,7 @@ const TaskManager: React.FC = () => {
     const handleToggleComplete = async (taskToToggle: Task) => {
         try {
             const updatedTask = { ...taskToToggle, completed: !taskToToggle.completed };
-            await axios.put<ApiResponse>(`http://localhost:4000/api/tasks/${taskToToggle._id}`, updatedTask, {
+            await axios.put<ApiResponse>(`https://todoback-iwsz.onrender.com/api/tasks/${taskToToggle._id}`, updatedTask, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             fetchTasks();

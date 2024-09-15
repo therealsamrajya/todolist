@@ -13,7 +13,7 @@ const RegisterForm: React.FC<{ onRegisterSuccess: () => void }> = ({ onRegisterS
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:4000/api/users/register', formData);
+            const response = await axios.post('https://todoback-iwsz.onrender.com/api/users/register', formData);
             console.log(response.data);
             setNotification({ message: response.data.message || 'Registration successful!', type: 'success' });
             setTimeout(() => {

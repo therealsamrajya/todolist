@@ -28,7 +28,7 @@ export const useStore = create<Store>((set, get) => ({
     logout: async () => {
         const { token } = get();
         try {
-            await axios.post('http://localhost:4000/api/users/logout', {}, {
+            await axios.post('https://todoback-iwsz.onrender.com/api/users/logout', {}, {
                 headers: { Authorization: `Bearer ${token}` }
             });
         } catch (error) {
@@ -47,7 +47,7 @@ export const useStore = create<Store>((set, get) => ({
             return;
         }
         try {
-            const response = await axios.get('http://localhost:4000/api/tasks', {
+            const response = await axios.get('https://todoback-iwsz.onrender.com/api/tasks', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             set({ tasks: response.data });
@@ -58,7 +58,7 @@ export const useStore = create<Store>((set, get) => ({
     addTask: async (task: Task) => {
         const { token, tasks } = get();
         try {
-            const response = await axios.post('http://localhost:4000/api/tasks', task, {
+            const response = await axios.post('https://todoback-iwsz.onrender.com/api/tasks', task, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             set({ tasks: [...tasks, response.data] });
@@ -69,7 +69,7 @@ export const useStore = create<Store>((set, get) => ({
     updateTask: async (taskId: string, updates: Partial<Task>) => {
         const { token, tasks } = get();
         try {
-            const response = await axios.put(`http://localhost:4000/api/tasks/${taskId}`, updates, {
+            const response = await axios.put(`https://todoback-iwsz.onrender.com/api/tasks/${taskId}`, updates, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             set({ tasks: tasks.map(task => task._id === taskId ? response.data : task) });
@@ -80,7 +80,7 @@ export const useStore = create<Store>((set, get) => ({
     deleteTask: async (taskId: string) => {
         const { token, tasks } = get();
         try {
-            await axios.delete(`http://localhost:4000/api/tasks/${taskId}`, {
+            await axios.delete(`https://todoback-iwsz.onrender.com/api/tasks/${taskId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             set({ tasks: tasks.filter(task => task._id !== taskId) });
