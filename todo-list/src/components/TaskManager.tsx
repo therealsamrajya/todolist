@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useStore } from '@/store/store'; // Update this path if necessary
+import { useStore } from '@/store/store'; 
 import { Button } from './ui/button';
 
 interface Task {

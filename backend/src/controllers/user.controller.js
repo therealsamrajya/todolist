@@ -1,5 +1,5 @@
 import { User } from "../models/user.model.js";
-import { Todo } from "../models/todo.model.js"; // Import the Todo model
+import { Todo } from "../models/todo.model.js"; 
 import jwt from "jsonwebtoken";
 import { asyncHandler } from "../utils/asynchandler.js";
 import { ApiError } from "../utils/ApiError.js";
@@ -8,7 +8,7 @@ import { ApiResponse } from "../utils/ApiResponse.js";
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
     const user = await User.findById(userId);
-    if (!user) throw new ApiError(404, "User not found"); // Check if user exists
+    if (!user) throw new ApiError(404, "User not found"); 
     const accessToken = user.generateAccessToken();
     const refreshToken = user.generateRefreshToken();
 
@@ -22,14 +22,14 @@ const generateAccessAndRefreshTokens = async (userId) => {
 };
 
 const registerUser = asyncHandler(async (req, res) => {
-    const { name, email, password } = req.body; // Changed username to name
+    const { name, email, password } = req.body; 
   
     if ([name, email, password].some((field) => field?.trim() === "")) {
       throw new ApiError(400, "All fields are required");
     }
   
     const existedUser = await User.findOne({
-      $or: [{ email }], // Removed username check
+      $or: [{ email }], 
     });
   
     if (existedUser) {
@@ -37,7 +37,7 @@ const registerUser = asyncHandler(async (req, res) => {
     }
     
     const user = await User.create({
-      name, // Changed username to name
+      name, 
       email,
       password,
     });
@@ -63,7 +63,7 @@ const loginUser = asyncHandler(async (req, res) => {
     const user = await User.findOne({ email });
   
     if (!user) {
-      throw new ApiError(404, "User does not exist"); // Corrected typo
+      throw new ApiError(404, "User does not exist"); 
     }
 
     const isPasswordValid = await user.isPasswordCorrect(password);
@@ -95,38 +95,38 @@ const loginUser = asyncHandler(async (req, res) => {
 });
 
 const logoutUser = asyncHandler(async (req, res) => {
-    try {
-      // Check if the refresh token exists in cookies
-      const refreshToken = req.cookies.refreshToken;
-      
-      if (!refreshToken) {
-        throw new ApiError(400, "No user is currently logged in");
-      }
-  
-      // Decode the refresh token to find the user
-      const decodedToken = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
-      
-      // Find the user by the decoded token
-      const user = await User.findById(decodedToken._id);
-  
-      if (!user) {
-        throw new ApiError(404, "User not found");
-      }
-  
-      // Clear the user's refresh token from the database (logout session)
-      user.refreshToken = null;
-      await user.save({ validateBeforeSave: false });
-  
-      // Clear the cookies
+  try {
+    // Check if the user is authenticated
+    if (!req.user) {
       return res
         .status(200)
-        .clearCookie("accessToken", { httpOnly: true, secure: true })
-        .clearCookie("refreshToken", { httpOnly: true, secure: true })
-        .json(new ApiResponse(200, null, "User has been logged out successfully"));
-    } catch (error) {
-      throw new ApiError(500, error.message || "Error logging out");
+        .json(new ApiResponse(200, null, "No user is currently logged in"));
     }
-  });
+
+    // Find the user by the id from the authenticated request
+    const user = await User.findById(req.user._id);
+
+    if (!user) {
+      return res
+        .status(200)
+        .json(new ApiResponse(200, null, "User not found, but session cleared"));
+    }
+
+    // Clear the user's refresh token from the database
+    user.refreshToken = null;
+    await user.save({ validateBeforeSave: false });
+
+    // Clear the cookies
+    res.clearCookie("accessToken", { httpOnly: true, secure: true });
+    res.clearCookie("refreshToken", { httpOnly: true, secure: true });
+
+    return res
+      .status(200)
+      .json(new ApiResponse(200, null, "User has been logged out successfully"));
+  } catch (error) {
+    throw new ApiError(500, error.message || "Error logging out");
+  }
+});
   
 
 

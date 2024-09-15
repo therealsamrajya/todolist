@@ -30,7 +30,7 @@ export const verifyJWT = asyncHandler(async (req, _, next) => {
       throw new ApiError(401, "User not found");
     }
 
-    // Attach the user ID to req.user
+    
     req.user = { id: user._id };
 
     next();
