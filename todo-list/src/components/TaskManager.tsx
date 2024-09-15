@@ -106,7 +106,7 @@ const TaskManager: React.FC = () => {
                     value={task.title} 
                     onChange={(e) => setTask({ ...task, title: e.target.value })} 
                     placeholder="Task Title" 
-                    className="w-fit dark:text-black p-2 border rounded mb-4"
+                    className="w-fit max-sm:w-full dark:text-black p-2 border rounded mb-4"
                 />
                 <textarea 
                     value={task.description} 
